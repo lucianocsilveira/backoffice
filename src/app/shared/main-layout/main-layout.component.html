@@ -3,7 +3,7 @@
   <!-- Sidebar -->
   <aside
     class="flex flex-col bg-gray-900 text-white transition-all duration-300 ease-in-out"
-    [class]="sidebarOpen() ? 'w-64' : 'w-16'"
+    [class]="sidebarOpen() ? 'w-16 lg:w-64' : 'w-16'"
   >
     <!-- Logo -->
     <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-700">
@@ -13,9 +13,7 @@
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
       </div>
-      @if (sidebarOpen()) {
-        <span class="text-lg font-semibold tracking-tight">{{ 'layout.appName' | transloco }}</span>
-      }
+      <span [class]="sidebarOpen() ? 'hidden lg:block text-lg font-semibold tracking-tight' : 'hidden'">{{ 'layout.appName' | transloco }}</span>
     </div>
 
     <!-- Nav -->
@@ -33,9 +31,7 @@
                 [attr.d]="item.iconPath" />
             </svg>
           </span>
-          @if (sidebarOpen()) {
-            <span class="text-sm font-medium">{{ item.label | transloco }}</span>
-          }
+          <span [class]="sidebarOpen() ? 'hidden lg:block text-sm font-medium' : 'hidden'">{{ item.label | transloco }}</span>
         </a>
       }
     </nav>
@@ -50,9 +46,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
         </svg>
-        @if (sidebarOpen()) {
-          <span class="text-sm font-medium">{{ 'layout.logout' | transloco }}</span>
-        }
+        <span [class]="sidebarOpen() ? 'hidden lg:block text-sm font-medium' : 'hidden'">{{ 'layout.logout' | transloco }}</span>
       </button>
     </div>
   </aside>
@@ -64,7 +58,7 @@
     <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
       <button
         (click)="toggleSidebar()"
-        class="cursor-pointer p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+        class="hidden lg:flex cursor-pointer p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
         [attr.aria-label]="'layout.toggleSidebar' | transloco"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
