@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, RefreshTokenResponse, AuthUser } from '../models/auth.model';
 
@@ -18,12 +18,17 @@ export class AuthService {
   readonly currentUser = this._currentUser.asReadonly();
   readonly isLoggedIn = computed(() => this._currentUser() !== null);
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
+  login(credentials: LoginRequest): Observable<AuthUser> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/auth/login`, credentials).pipe(
       tap((response) => {
         this.storeTokens(response.accessToken, response.refreshToken);
-        localStorage.setItem(USER_KEY, JSON.stringify(response.user));
-        this._currentUser.set(response.user);
+      }),
+      switchMap((response) =>
+        this.http.get<AuthUser>(`${this.apiUrl}/admin/users/${response.userId}`)
+      ),
+      tap((user) => {
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        this._currentUser.set(user);
       })
     );
   }
@@ -31,7 +36,7 @@ export class AuthService {
   refresh(): Observable<RefreshTokenResponse> {
     const refreshToken = this.getRefreshToken();
     return this.http
-      .post<RefreshTokenResponse>(`${this.apiUrl}/auth/refresh`, { refreshToken })
+      .post<RefreshTokenResponse>(`${this.apiUrl}/api/auth/refresh`, { refreshToken })
       .pipe(
         tap((response) => {
           this.storeTokens(response.accessToken, response.refreshToken);

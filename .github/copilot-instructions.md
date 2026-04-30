@@ -68,7 +68,7 @@
 5. **Ao criar formulários:** use **Reactive Forms** com validações tipadas
 6. **Ao tratar erros:** sempre implemente `catchError` nos observables de HTTP
 7. **Proibido:** `any`, `NgModules` desnecessários, CSS global sem necessidade, lógica complexa em templates
-8. **Ao criar qualquer página/componente:** deve ser totalmente **responsivo** (mobile-first com classes Tailwind) e todas as strings de texto visíveis ao usuário devem usar o pipe `| transloco` com chaves nos arquivos `public/assets/i18n/*.json` (pt-BR, en, es)
+8. **Ao criar qualquer página/componente:** deve ser totalmente **responsivo** (mobile-first com classes Tailwind) e todas as strings de texto visíveis ao usuário devem usar o pipe `| transloco` com chaves nos arquivos `public/assets/i18n/*.json` (pt-BR, en, es) e deve seguir o tema selecionado (claro/escuro) usando as classes do Tailwind configuradas no `tailwind.config.js` para cores, tipografia e espaçamento.
 
 ---
 

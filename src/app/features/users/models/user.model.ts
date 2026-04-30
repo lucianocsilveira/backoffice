@@ -1,22 +1,22 @@
 export interface User {
   id: string;
-  name: string;
+  username: string;
   email: string;
   role: string;
-  active: boolean;
+  isActive: boolean;
   createdAt: string;
 }
 
 export interface CreateUserRequest {
-  name: string;
+  username: string;
   email: string;
   role: string;
   password: string;
 }
 
 export interface UpdateUserRequest {
-  name: string;
+  username: string;
   email: string;
+  password: string;
   role: string;
-  active: boolean;
 }

@@ -1,14 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { User, CreateUserRequest, UpdateUserRequest } from '../models/user.model';
-import { PagedResult, QueryParams } from '../../../core/models/api.model';
+import { ApiPagedResponse, PagedResult, QueryParams } from '../../../core/models/api.model';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/users`;
+  private readonly baseUrl = `${environment.apiUrl}/admin/users`;
 
   getAll(query: QueryParams = {}): Observable<PagedResult<User>> {
     let params = new HttpParams();
@@ -17,7 +18,15 @@ export class UsersService {
     if (query.search) params = params.set('search', query.search);
     if (query.sortBy) params = params.set('sortBy', query.sortBy);
     if (query.sortDesc !== undefined) params = params.set('sortDesc', query.sortDesc);
-    return this.http.get<PagedResult<User>>(this.baseUrl, { params });
+    return this.http.get<ApiPagedResponse<User>>(this.baseUrl, { params }).pipe(
+      map((res) => ({
+        items: res.items,
+        totalCount: res.pagination.total,
+        page: res.pagination.currentPage,
+        pageSize: query.pageSize ?? 10,
+        totalPages: res.pagination.lastPage,
+      }))
+    );
   }
 
   getById(id: string): Observable<User> {

@@ -14,7 +14,7 @@
         </svg>
       </div>
       @if (sidebarOpen()) {
-        <span class="text-lg font-semibold tracking-tight">Backoffice</span>
+        <span class="text-lg font-semibold tracking-tight">{{ 'layout.appName' | transloco }}</span>
       }
     </div>
 
@@ -34,7 +34,7 @@
             </svg>
           </span>
           @if (sidebarOpen()) {
-            <span class="text-sm font-medium">{{ item.label }}</span>
+            <span class="text-sm font-medium">{{ item.label | transloco }}</span>
           }
         </a>
       }
@@ -44,28 +44,28 @@
     <div class="border-t border-gray-700 p-3">
       <button
         (click)="logout()"
-        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-gray-300 hover:bg-red-700 hover:text-white transition-colors duration-150"
+        class="cursor-pointer flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-gray-300 hover:bg-red-700 hover:text-white transition-colors duration-150"
       >
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
         </svg>
         @if (sidebarOpen()) {
-          <span class="text-sm font-medium">Sair</span>
+          <span class="text-sm font-medium">{{ 'layout.logout' | transloco }}</span>
         }
       </button>
     </div>
   </aside>
 
   <!-- Main content -->
-  <div class="flex-1 flex flex-col min-w-0">
+  <div class="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-gray-950">
 
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
       <button
         (click)="toggleSidebar()"
-        class="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
-        aria-label="Alternar menu"
+        class="cursor-pointer p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+        [attr.aria-label]="'layout.toggleSidebar' | transloco"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -74,7 +74,65 @@
 
       <!-- User info -->
       <div class="flex items-center gap-3">
-        <span class="text-sm text-gray-600">{{ currentUser()?.name }}</span>
+        <!-- Theme toggle -->
+        <button
+          (click)="themeService.toggle()"
+          class="cursor-pointer p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          [attr.aria-label]="(themeService.theme() === 'dark' ? 'theme.activateLight' : 'theme.activateDark') | transloco"
+        >
+          @if (themeService.theme() === 'dark') {
+            <!-- Sun icon -->
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z" />
+            </svg>
+          } @else {
+            <!-- Moon icon -->
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+            </svg>
+          }
+        </button>
+
+        <!-- Language selector -->
+        <div class="relative">
+          <button
+            (click)="toggleLangMenu()"
+            class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+          >
+            <span>{{ currentLangObj().flag }}</span>
+            <span>{{ currentLangObj().code }}</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          @if (langMenuOpen()) {
+            <!-- Backdrop -->
+            <div class="fixed inset-0 z-10" (click)="langMenuOpen.set(false)"></div>
+            <!-- Dropdown -->
+            <div class="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg z-20 py-1">
+              @for (lang of langService.available; track lang.code) {
+                <button
+                  (click)="selectLang(lang.code)"
+                  class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  [class.font-semibold]="lang.code === langService.currentLang()"
+                >
+                  <span>{{ lang.flag }}</span>
+                  <span>{{ lang.label }}</span>
+                  @if (lang.code === langService.currentLang()) {
+                    <svg class="w-3.5 h-3.5 ml-auto text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <span class="text-sm text-gray-600 dark:text-gray-300">{{ currentUser()?.username }}</span>
         <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-semibold">
           {{ getUserInitials() }}
         </div>

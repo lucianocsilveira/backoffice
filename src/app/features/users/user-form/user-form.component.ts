@@ -1,13 +1,14 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { UsersService } from '../services/users.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './user-form.component.html',
 })
 export class UserFormComponent implements OnInit {
@@ -16,6 +17,7 @@ export class UserFormComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
+  private readonly t = inject(TranslocoService);
 
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -27,7 +29,6 @@ export class UserFormComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     role: ['User', Validators.required],
     password: ['', Validators.minLength(6)],
-    active: [true],
   });
 
   ngOnInit(): void {
@@ -49,15 +50,14 @@ export class UserFormComponent implements OnInit {
     this.usersService.getById(id).subscribe({
       next: (user) => {
         this.form.patchValue({
-          name: user.name,
+          name: user.username,
           email: user.email,
           role: user.role,
-          active: user.active,
         });
         this.loading.set(false);
       },
       error: () => {
-        this.toastService.error('Erro ao carregar usuário.');
+        this.toastService.error(this.t.translate('userForm.loadError'));
         this.loading.set(false);
       },
     });
@@ -71,13 +71,13 @@ export class UserFormComponent implements OnInit {
 
     const obs$ = this.isEdit()
       ? this.usersService.update(this.userId()!, {
-          name: value.name,
+          username: value.name,
           email: value.email,
+          password: value.password,
           role: value.role,
-          active: value.active,
         })
       : this.usersService.create({
-          name: value.name,
+          username: value.name,
           email: value.email,
           role: value.role,
           password: value.password,
@@ -86,18 +86,18 @@ export class UserFormComponent implements OnInit {
     obs$.subscribe({
       next: () => {
         this.toastService.success(
-          this.isEdit() ? 'Usuário atualizado com sucesso.' : 'Usuário criado com sucesso.'
+          this.isEdit() ? this.t.translate('userForm.updateSuccess') : this.t.translate('userForm.createSuccess')
         );
         this.router.navigate(['/users']);
       },
       error: () => {
-        this.toastService.error('Erro ao salvar usuário.');
+        this.toastService.error(this.t.translate('userForm.saveError'));
         this.saving.set(false);
       },
     });
   }
 
-  hasError(field: 'name' | 'email' | 'role' | 'password' | 'active'): boolean {
+  hasError(field: 'name' | 'email' | 'role' | 'password'): boolean {
     const ctrl = this.form.controls[field];
     return ctrl.invalid && ctrl.touched;
   }

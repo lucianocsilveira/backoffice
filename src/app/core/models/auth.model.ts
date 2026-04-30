@@ -7,7 +7,7 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-  user: AuthUser;
+  userId: string;
 }
 
 export interface RefreshTokenResponse {
@@ -18,7 +18,7 @@ export interface RefreshTokenResponse {
 
 export interface AuthUser {
   id: string;
-  name: string;
+  username: string;
   email: string;
   role: string;
   avatarUrl?: string;

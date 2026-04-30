@@ -4,6 +4,19 @@ export interface ApiResponse<T> {
   success: boolean;
 }
 
+export interface ApiPagination {
+  currentPage: number;
+  from: number;
+  to: number;
+  total: number;
+  lastPage: number;
+}
+
+export interface ApiPagedResponse<T> {
+  items: T[];
+  pagination: ApiPagination;
+}
+
 export interface PagedResult<T> {
   items: T[];
   totalCount: number;

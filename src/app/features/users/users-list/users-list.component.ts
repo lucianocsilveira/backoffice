@@ -2,20 +2,26 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { UsersService } from '../services/users.service';
 import { User } from '../models/user.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { PagedResult } from '../../../core/models/api.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, DatePipe],
+  imports: [RouterLink, FormsModule, DatePipe, TranslocoPipe],
   templateUrl: './users-list.component.html',
 })
 export class UsersListComponent implements OnInit {
   private readonly usersService = inject(UsersService);
   private readonly toastService = inject(ToastService);
+  private readonly t = inject(TranslocoService);
+  private readonly authService = inject(AuthService);
+
+  readonly isMaster = computed(() => this.authService.currentUser()?.role === 'Master');
 
   readonly loading = signal(false);
   readonly search = signal('');
@@ -34,6 +40,7 @@ export class UsersListComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+    console.log(this.authService.currentUser());
   }
 
   load(): void {
@@ -46,7 +53,7 @@ export class UsersListComponent implements OnInit {
           this.loading.set(false);
         },
         error: () => {
-          this.toastService.error('Erro ao carregar usuários.');
+          this.toastService.error(this.t.translate('users.loadError'));
           this.loading.set(false);
         },
       });
@@ -64,13 +71,13 @@ export class UsersListComponent implements OnInit {
   }
 
   confirmDelete(user: User): void {
-    if (!confirm(`Excluir o usuário "${user.name}"?`)) return;
+    if (!confirm(this.t.translate('users.deleteConfirm', { name: user.username }))) return;
     this.usersService.remove(user.id).subscribe({
       next: () => {
-        this.toastService.success('Usuário excluído com sucesso.');
+        this.toastService.success(this.t.translate('users.deleteSuccess'));
         this.load();
       },
-      error: () => this.toastService.error('Erro ao excluir usuário.'),
+      error: () => this.toastService.error(this.t.translate('users.deleteError')),
     });
   }
 

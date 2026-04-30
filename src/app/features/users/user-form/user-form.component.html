@@ -1,100 +1,88 @@
 <div class="max-w-2xl">
   <!-- Header -->
   <div class="flex items-center gap-3 mb-6">
-    <a routerLink="/users" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+    <a routerLink="/users" class="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
     </a>
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">{{ isEdit() ? 'Editar usuário' : 'Novo usuário' }}</h1>
-      <p class="text-sm text-gray-500 mt-0.5">{{ isEdit() ? 'Atualize as informações do usuário' : 'Preencha os dados para criar um novo usuário' }}</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ (isEdit() ? 'userForm.titleEdit' : 'userForm.titleNew') | transloco }}</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ (isEdit() ? 'userForm.subtitleEdit' : 'userForm.subtitleNew') | transloco }}</p>
     </div>
   </div>
 
   @if (loading()) {
-    <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
       @for (i of [1,2,3,4]; track i) {
         <div class="space-y-1.5">
-          <div class="h-3 w-20 bg-gray-100 rounded animate-pulse"></div>
-          <div class="h-10 bg-gray-100 rounded-lg animate-pulse"></div>
+          <div class="h-3 w-20 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"></div>
+          <div class="h-10 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse"></div>
         </div>
       }
     </div>
   } @else {
-    <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="space-y-5">
 
         <!-- Nome -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nome completo</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'userForm.name' | transloco }}</label>
           <input
             type="text"
             formControlName="name"
-            placeholder="João Silva"
-            class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+            [placeholder]="'userForm.namePlaceholder' | transloco"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
             [class.border-red-500]="hasError('name')"
           />
           @if (hasError('name')) {
-            <p class="mt-1 text-xs text-red-600">Nome obrigatório (mín. 2 caracteres).</p>
+            <p class="mt-1 text-xs text-red-600">{{ 'userForm.nameError' | transloco }}</p>
           }
         </div>
 
         <!-- E-mail -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'userForm.email' | transloco }}</label>
           <input
             type="email"
             formControlName="email"
-            placeholder="joao@empresa.com"
-            class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+            [placeholder]="'userForm.emailPlaceholder' | transloco"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
             [class.border-red-500]="hasError('email')"
           />
           @if (hasError('email')) {
-            <p class="mt-1 text-xs text-red-600">E-mail inválido.</p>
+            <p class="mt-1 text-xs text-red-600">{{ 'userForm.emailError' | transloco }}</p>
           }
         </div>
 
         <!-- Perfil -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Perfil</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'userForm.role' | transloco }}</label>
           <select
             formControlName="role"
-            class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition bg-white"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition bg-white"
           >
-            <option value="Admin">Administrador</option>
-            <option value="Manager">Gerente</option>
-            <option value="User">Usuário</option>
+            <option value="Master">{{ 'userForm.roleMaster' | transloco }}</option>
+            <option value="Admin">{{ 'userForm.roleAdmin' | transloco }}</option>
           </select>
         </div>
 
-        <!-- Senha (apenas criação ou opcional na edição) -->
+        <!-- Senha (criação obrigatória; edição opcional) -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">
-            Senha {{ isEdit() ? '(deixe em branco para manter)' : '' }}
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            {{ 'userForm.password' | transloco}}
           </label>
           <input
             type="password"
             formControlName="password"
             placeholder="••••••••"
-            class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
             [class.border-red-500]="hasError('password')"
           />
           @if (hasError('password')) {
-            <p class="mt-1 text-xs text-red-600">Senha obrigatória (mín. 6 caracteres).</p>
+            <p class="mt-1 text-xs text-red-600">{{ 'userForm.passwordError' | transloco }}</p>
           }
         </div>
-
-        <!-- Status (somente edição) -->
-        @if (isEdit()) {
-          <div class="flex items-center gap-3">
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" formControlName="active" class="sr-only peer" />
-              <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-primary-600 peer-focus:ring-2 peer-focus:ring-primary-300 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:translate-x-4"></div>
-            </label>
-            <span class="text-sm font-medium text-gray-700">Usuário ativo</span>
-          </div>
-        }
 
         <!-- Actions -->
         <div class="flex items-center gap-3 pt-2">
@@ -108,16 +96,16 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
-              Salvando...
+              {{ 'userForm.saving' | transloco }}
             } @else {
-              Salvar
+              {{ 'userForm.save' | transloco }}
             }
           </button>
           <a
             routerLink="/users"
-            class="text-sm font-medium text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-100 transition-colors"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
-            Cancelar
+            {{ 'userForm.cancel' | transloco }}
           </a>
         </div>
 
