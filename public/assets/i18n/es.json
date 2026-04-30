@@ -1,0 +1,20 @@
+{
+  "login": {
+    "title": "Backoffice",
+    "subtitle": "Inicia sesión para continuar",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@email.com",
+    "emailError": "Ingresa un correo electrónico válido.",
+    "password": "Contraseña",
+    "passwordError": "La contraseña debe tener al menos 6 caracteres.",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión...",
+    "showPassword": "Mostrar/ocultar contraseña",
+    "invalidCredentials": "Correo o contraseña inválidos."
+  },
+  "theme": {
+    "light": "Tema claro",
+    "dark": "Tema oscuro",
+    "toggle": "Cambiar tema"
+  }
+}

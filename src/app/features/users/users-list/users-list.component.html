@@ -1,0 +1,162 @@
+<div>
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Usuários</h1>
+      <p class="text-sm text-gray-500 mt-1">{{ result().totalCount }} registro(s) encontrado(s)</p>
+    </div>
+    <a
+      routerLink="/users/new"
+      class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Novo usuário
+    </a>
+  </div>
+
+  <!-- Search -->
+  <div class="bg-white rounded-xl border border-gray-200 mb-4">
+    <div class="px-4 py-3 border-b border-gray-100">
+      <div class="relative max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Buscar por nome ou e-mail..."
+          [ngModel]="search()"
+          (ngModelChange)="onSearch($event)"
+          class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
+            <th class="px-4 py-3">Nome</th>
+            <th class="px-4 py-3">E-mail</th>
+            <th class="px-4 py-3">Perfil</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3">Criado em</th>
+            <th class="px-4 py-3 text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1,2,3,4,5]; track i) {
+              <tr class="border-b border-gray-50">
+                @for (j of [1,2,3,4,5,6]; track j) {
+                  <td class="px-4 py-3">
+                    <div class="h-4 bg-gray-100 rounded animate-pulse"></div>
+                  </td>
+                }
+              </tr>
+            }
+          } @else if (result().items.length === 0) {
+            <tr>
+              <td colspan="6" class="px-4 py-12 text-center text-gray-400 text-sm">
+                Nenhum usuário encontrado.
+              </td>
+            </tr>
+          } @else {
+            @for (user of result().items; track user.id) {
+              <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-semibold shrink-0">
+                      {{ user.name[0].toUpperCase() }}
+                    </div>
+                    <span class="font-medium text-gray-900">{{ user.name }}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  @if (user.active) {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                      <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                      Ativo
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+                      <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                      Inativo
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-3 text-gray-500">{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <a
+                      [routerLink]="['/users', user.id, 'edit']"
+                      class="p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded transition-colors"
+                      title="Editar"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </a>
+                    <button
+                      (click)="confirmDelete(user)"
+                      class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                      title="Excluir"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+      <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+        <span class="text-xs text-gray-500">Página {{ page() }} de {{ totalPages() }}</span>
+        <div class="flex items-center gap-1">
+          <button
+            [disabled]="page() === 1"
+            (click)="setPage(page() - 1)"
+            class="p-1.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          @for (p of pageNumbers(); track p) {
+            <button
+              (click)="setPage(p)"
+              class="w-8 h-8 rounded text-xs font-medium transition-colors"
+              [class]="p === page() ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-100'"
+            >{{ p }}</button>
+          }
+          <button
+            [disabled]="page() === totalPages()"
+            (click)="setPage(page() + 1)"
+            class="p-1.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
