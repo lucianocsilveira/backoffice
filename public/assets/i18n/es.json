@@ -22,6 +22,7 @@
   "layout": {
     "appName": "Backoffice",
     "users": "Usuarios",
+    "games": "Games",
     "logout": "Cerrar sesión",
     "toggleSidebar": "Alternar menú"
   },
@@ -46,6 +47,42 @@
     "deleteSuccess": "Usuario eliminado con éxito.",
     "deleteError": "Error al eliminar el usuario.",
     "loadError": "Error al cargar los usuarios."
+  },
+  "games": {
+    "title": "Games",
+    "records": "{{ count }} registro(s) encontrado(s)",
+    "newItem": "Nuevo game",
+    "searchPlaceholder": "Buscar por slug...",
+    "colImage": "Imagen",
+    "colSlug": "Slug",
+    "colImageUrl": "URL de imagen",
+    "colActions": "Acciones",
+    "empty": "No se encontraron games.",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar el game \"{{ slug }}\"?",
+    "deleteSuccess": "Game eliminado con éxito.",
+    "deleteError": "Error al eliminar el game.",
+    "loadError": "Error al cargar los games."
+  },
+  "gameForm": {
+    "titleNew": "Nuevo game",
+    "titleEdit": "Editar game",
+    "subtitleNew": "Completa los datos para crear un nuevo game",
+    "subtitleEdit": "Actualiza la información del game",
+    "slug": "Slug",
+    "slugPlaceholder": "mi-game",
+    "slugError": "Slug obligatorio (mín. 2 caracteres).",
+    "imageUrl": "URL de imagen",
+    "imageUrlPlaceholder": "https://ejemplo.com/imagen.png",
+    "imageUrlError": "URL de imagen obligatoria.",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "createSuccess": "Game creado con éxito.",
+    "updateSuccess": "Game actualizado con éxito.",
+    "saveError": "Error al guardar el game.",
+    "loadError": "Error al cargar el game."
   },
   "userForm": {
     "titleNew": "Nuevo usuario",

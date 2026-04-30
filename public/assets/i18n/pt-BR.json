@@ -22,6 +22,7 @@
   "layout": {
     "appName": "Backoffice",
     "users": "Usuários",
+    "games": "Games",
     "logout": "Sair",
     "toggleSidebar": "Alternar menu"
   },
@@ -46,6 +47,42 @@
     "deleteSuccess": "Usuário excluído com sucesso.",
     "deleteError": "Erro ao excluir usuário.",
     "loadError": "Erro ao carregar usuários."
+  },
+  "games": {
+    "title": "Games",
+    "records": "{{ count }} registro(s) encontrado(s)",
+    "newItem": "Novo game",
+    "searchPlaceholder": "Buscar por slug...",
+    "colImage": "Imagem",
+    "colSlug": "Slug",
+    "colImageUrl": "URL da imagem",
+    "colActions": "Ações",
+    "empty": "Nenhum game encontrado.",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir o game \"{{ slug }}\"?",
+    "deleteSuccess": "Game excluído com sucesso.",
+    "deleteError": "Erro ao excluir game.",
+    "loadError": "Erro ao carregar games."
+  },
+  "gameForm": {
+    "titleNew": "Novo game",
+    "titleEdit": "Editar game",
+    "subtitleNew": "Preencha os dados para criar um novo game",
+    "subtitleEdit": "Atualize as informações do game",
+    "slug": "Slug",
+    "slugPlaceholder": "meu-game",
+    "slugError": "Slug obrigatório (mín. 2 caracteres).",
+    "imageUrl": "URL da imagem",
+    "imageUrlPlaceholder": "https://exemplo.com/imagem.png",
+    "imageUrlError": "URL da imagem obrigatória.",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "createSuccess": "Game criado com sucesso.",
+    "updateSuccess": "Game atualizado com sucesso.",
+    "saveError": "Erro ao salvar game.",
+    "loadError": "Erro ao carregar game."
   },
   "userForm": {
     "titleNew": "Novo usuário",

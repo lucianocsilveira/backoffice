@@ -1,0 +1,126 @@
+<div>
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ 'games.title' | transloco }}</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ 'games.records' | transloco: { count: filtered().length } }}</p>
+    </div>
+    <a
+      routerLink="/games/new"
+      class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      {{ 'games.newItem' | transloco }}
+    </a>
+  </div>
+
+  <!-- Search + Table card -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+    <!-- Search bar -->
+    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+      <div class="relative max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          [placeholder]="'games.searchPlaceholder' | transloco"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+          class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-100 dark:border-gray-700">
+            <th class="px-4 py-3">{{ 'games.colImage' | transloco }}</th>
+            <th class="px-4 py-3">{{ 'games.colSlug' | transloco }}</th>
+            <th class="px-4 py-3">{{ 'games.colImageUrl' | transloco }}</th>
+            <th class="px-4 py-3 text-right">{{ 'games.colActions' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1,2,3,4,5]; track i) {
+              <tr class="border-b border-gray-50 dark:border-gray-700">
+                @for (j of [1,2,3,4]; track j) {
+                  <td class="px-4 py-3">
+                    <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </td>
+                }
+              </tr>
+            }
+          } @else if (filtered().length === 0) {
+            <tr>
+              <td colspan="4" class="px-4 py-12 text-center text-gray-400 dark:text-gray-500 text-sm">
+                {{ 'games.empty' | transloco }}
+              </td>
+            </tr>
+          } @else {
+            @for (item of filtered(); track item.id) {
+              <tr class="border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                <!-- Thumbnail -->
+                <td class="px-4 py-3">
+                  @if (item.imageUrl) {
+                    <img
+                      [src]="item.imageUrl"
+                      [alt]="item.slug"
+                      class="w-10 h-10 rounded-lg object-cover border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
+                      (error)="$any($event.target).style.display='none'"
+                    />
+                  } @else {
+                    <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  }
+                </td>
+                <!-- Slug -->
+                <td class="px-4 py-3">
+                  <span class="font-medium text-gray-900 dark:text-white">{{ item.slug }}</span>
+                </td>
+                <!-- Image URL -->
+                <td class="px-4 py-3 text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                  <span class="truncate block" [title]="item.imageUrl">{{ item.imageUrl }}</span>
+                </td>
+                <!-- Actions -->
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <a
+                      [routerLink]="['/games', item.id, 'edit']"
+                      class="cursor-pointer p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded transition-colors"
+                      [title]="'games.edit' | transloco"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </a>
+                    <button
+                      (click)="confirmDelete(item)"
+                      class="cursor-pointer p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                      [title]="'games.delete' | transloco"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

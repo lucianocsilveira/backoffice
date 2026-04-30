@@ -22,6 +22,7 @@
   "layout": {
     "appName": "Backoffice",
     "users": "Users",
+    "games": "Games",
     "logout": "Sign out",
     "toggleSidebar": "Toggle menu"
   },
@@ -46,6 +47,42 @@
     "deleteSuccess": "User deleted successfully.",
     "deleteError": "Error deleting user.",
     "loadError": "Error loading users."
+  },
+  "games": {
+    "title": "Games",
+    "records": "{{ count }} record(s) found",
+    "newItem": "New game",
+    "searchPlaceholder": "Search by slug...",
+    "colImage": "Image",
+    "colSlug": "Slug",
+    "colImageUrl": "Image URL",
+    "colActions": "Actions",
+    "empty": "No games found.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete game \"{{ slug }}\"?",
+    "deleteSuccess": "Game deleted successfully.",
+    "deleteError": "Error deleting game.",
+    "loadError": "Error loading games."
+  },
+  "gameForm": {
+    "titleNew": "New game",
+    "titleEdit": "Edit game",
+    "subtitleNew": "Fill in the details to create a new game",
+    "subtitleEdit": "Update the game information",
+    "slug": "Slug",
+    "slugPlaceholder": "my-game",
+    "slugError": "Slug required (min. 2 characters).",
+    "imageUrl": "Image URL",
+    "imageUrlPlaceholder": "https://example.com/image.png",
+    "imageUrlError": "Image URL is required.",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "createSuccess": "Game created successfully.",
+    "updateSuccess": "Game updated successfully.",
+    "saveError": "Error saving game.",
+    "loadError": "Error loading game."
   },
   "userForm": {
     "titleNew": "New user",

@@ -1,0 +1,97 @@
+<div class="max-w-2xl">
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-6">
+    <a routerLink="/games" class="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ (isEdit() ? 'gameForm.titleEdit' : 'gameForm.titleNew') | transloco }}</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ (isEdit() ? 'gameForm.subtitleEdit' : 'gameForm.subtitleNew') | transloco }}</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+      @for (i of [1,2]; track i) {
+        <div class="space-y-1.5">
+          <div class="h-3 w-20 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"></div>
+          <div class="h-10 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="space-y-5">
+
+        <!-- Slug -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'gameForm.slug' | transloco }}</label>
+          <input
+            type="text"
+            formControlName="slug"
+            [placeholder]="'gameForm.slugPlaceholder' | transloco"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+            [class.border-red-500]="hasError('slug')"
+          />
+          @if (hasError('slug')) {
+            <p class="mt-1 text-xs text-red-600">{{ 'gameForm.slugError' | transloco }}</p>
+          }
+        </div>
+
+        <!-- Image URL -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'gameForm.imageUrl' | transloco }}</label>
+          <input
+            type="url"
+            formControlName="imageUrl"
+            [placeholder]="'gameForm.imageUrlPlaceholder' | transloco"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+            [class.border-red-500]="hasError('imageUrl')"
+          />
+          @if (hasError('imageUrl')) {
+            <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageUrlError' | transloco }}</p>
+          }
+          <!-- Preview -->
+          @if (form.controls.imageUrl.value) {
+            <div class="mt-2">
+              <img
+                [src]="form.controls.imageUrl.value"
+                alt="Preview"
+                class="h-20 w-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
+                (error)="$any($event.target).style.display='none'"
+              />
+            </div>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
+          <button
+            type="submit"
+            [disabled]="saving()"
+            class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+          >
+            @if (saving()) {
+              <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              {{ 'gameForm.saving' | transloco }}
+            } @else {
+              {{ 'gameForm.save' | transloco }}
+            }
+          </button>
+          <a
+            routerLink="/games"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            {{ 'gameForm.cancel' | transloco }}
+          </a>
+        </div>
+
+      </form>
+    </div>
+  }
+</div>

@@ -40,7 +40,6 @@ export class UsersListComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
-    console.log(this.authService.currentUser());
   }
 
   load(): void {
