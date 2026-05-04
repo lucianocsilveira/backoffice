@@ -74,6 +74,9 @@
           @if (imageSizeError()) {
             <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageSizeError' | transloco }}</p>
           }
+          @if (imageTypeError()) {
+            <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageTypeError' | transloco }}</p>
+          }
 
           <!-- Preview: novo arquivo selecionado -->
           @if (previewUrl()) {
