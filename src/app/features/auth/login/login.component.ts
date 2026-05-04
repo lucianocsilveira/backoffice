@@ -38,8 +38,9 @@ export class LoginComponent {
       next: () => {
         this.router.navigate(['/dashboard']);
       },
-      error: () => {
-        this.toastService.error(this.transloco.translate('login.invalidCredentials'));
+      error: (e) => {
+        const errorMsg = e.status === 401 ? 'login.invalidCredentials' : e.statusText;
+        this.toastService.error(this.transloco.translate(errorMsg));
         this.loading.set(false);
       },
     });
