@@ -41,7 +41,7 @@
           <tr class="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-100 dark:border-gray-700">
             <th class="px-4 py-3">{{ 'games.colImage' | transloco }}</th>
             <th class="px-4 py-3">{{ 'games.colSlug' | transloco }}</th>
-            <th class="px-4 py-3">{{ 'games.colImage' | transloco }}</th>
+            <!-- <th class="px-4 py-3">{{ 'games.colImageUrl' | transloco }}</th> -->
             <th class="px-4 py-3 text-right">{{ 'games.colActions' | transloco }}</th>
           </tr>
         </thead>
@@ -49,7 +49,7 @@
           @if (loading()) {
             @for (i of [1,2,3,4,5]; track i) {
               <tr class="border-b border-gray-50 dark:border-gray-700">
-                @for (j of [1,2,3,4]; track j) {
+                @for (j of [1,2,3]; track j) {
                   <td class="px-4 py-3">
                     <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"></div>
                   </td>
@@ -88,9 +88,9 @@
                   <span class="font-medium text-gray-900 dark:text-white">{{ item.slug }}</span>
                 </td>
                 <!-- Image URL -->
-                <td class="px-4 py-3 text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                <!-- <td class="px-4 py-3 text-gray-500 dark:text-gray-400 max-w-xs truncate">
                   <span class="truncate block" [title]="item.imageUrl">{{ item.imageUrl }}</span>
-                </td>
+                </td> -->
                 <!-- Actions -->
                 <td class="px-4 py-3 text-right">
                   <div class="flex items-center justify-end gap-2">
