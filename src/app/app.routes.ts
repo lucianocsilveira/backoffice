@@ -22,6 +22,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/games/games.routes').then((m) => m.gamesRoutes),
       },
+      {
+        path: 'sections',
+        loadChildren: () =>
+          import('./features/sections/sections.routes').then((m) => m.sectionsRoutes),
+      },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
     ],
   },
