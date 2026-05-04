@@ -6,5 +6,4 @@ export interface GameItem {
 
 export interface GameItemRequest {
   slug: string;
-  imageUrl: string;
 }

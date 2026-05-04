@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { GameItem, GameItemRequest } from '../models/game-item.model';
+import { GameItem } from '../models/game-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class GamesService {
@@ -17,11 +17,11 @@ export class GamesService {
     return this.http.get<GameItem>(`${this.baseUrl}/${id}`);
   }
 
-  create(payload: GameItemRequest): Observable<GameItem> {
+  create(payload: FormData): Observable<GameItem> {
     return this.http.post<GameItem>(this.baseUrl, payload);
   }
 
-  update(id: string, payload: GameItemRequest): Observable<GameItem> {
+  update(id: string, payload: FormData): Observable<GameItem> {
     return this.http.put<GameItem>(`${this.baseUrl}/${id}`, payload);
   }
 

@@ -43,6 +43,44 @@
 - Feedbacks visuais em todas as ações (toast notifications, estados de erro inline)
 - Tabelas de dados com ordenação, paginação e filtros
 
+### Upload de Imagens em Formulários
+Sempre que um formulário tiver um campo de imagem/arquivo, seguir este padrão:
+- **Nunca** usar `<input type="url">` para imagens — usar `<input type="file" accept="image/*">`
+- Enviar como `multipart/form-data` via `FormData` (não JSON)
+- O service recebe `FormData` e retorna a entidade com `imageUrl` já preenchida pelo backend
+- No componente, usar signals: `selectedFile = signal<File | null>(null)`, `previewUrl = signal<string | null>(null)`
+- Gerar preview com `URL.createObjectURL(file)` e revogar no `ngOnDestroy` com `URL.revokeObjectURL`
+- Em modo edição: campo de arquivo é opcional — exibir imagem atual e só enviar `image` no FormData se novo arquivo selecionado
+- Validação manual: se modo criação e nenhum arquivo selecionado, bloquear submit e exibir erro via signal (`imageRequired = signal(false)`)
+- A área de upload deve ser um `<label>` estilizado com `border-dashed` do Tailwind, exibindo nome do arquivo quando selecionado
+
+```typescript
+// Exemplo no component
+readonly selectedFile = signal<File | null>(null);
+readonly previewUrl = signal<string | null>(null);
+private objectUrl: string | null = null;
+
+onFileChange(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0] ?? null;
+  this.selectedFile.set(file);
+  if (this.objectUrl) URL.revokeObjectURL(this.objectUrl);
+  this.objectUrl = file ? URL.createObjectURL(file) : null;
+  this.previewUrl.set(this.objectUrl);
+}
+
+ngOnDestroy(): void {
+  if (this.objectUrl) URL.revokeObjectURL(this.objectUrl);
+}
+
+// No submit:
+const fd = new FormData();
+fd.append('slug', this.form.controls.slug.value);
+if (this.selectedFile()) fd.append('image', this.selectedFile()!);
+```
+
+---
+
 ### Integração com Backend .NET
 - Crie um `service` por domínio (ex: `UsersService`, `OrdersService`)
 - Defina interfaces TypeScript espelhando os DTOs do backend
