@@ -45,26 +45,62 @@
 
 ### Upload de Imagens em Formulários
 Sempre que um formulário tiver um campo de imagem/arquivo, seguir este padrão:
-- **Nunca** usar `<input type="url">` para imagens — usar `<input type="file" accept="image/*">`
+- **Nunca** usar `<input type="url">` para imagens — usar `<input type="file" accept="image/jpeg,image/png">`
+- Aceitar apenas **JPG e PNG** — validar o `file.type` via `isFileTypeValid(file)` do utilitário `file-validation.utils.ts` antes de validar o tamanho
 - Enviar como `multipart/form-data` via `FormData` (não JSON)
 - O service recebe `FormData` e retorna a entidade com `imageUrl` já preenchida pelo backend
-- No componente, usar signals: `selectedFile = signal<File | null>(null)`, `previewUrl = signal<string | null>(null)`
+- No componente, usar signals: `selectedFile = signal<File | null>(null)`, `previewUrl = signal<string | null>(null)`, `isDragOver = signal(false)`
 - Gerar preview com `URL.createObjectURL(file)` e revogar no `ngOnDestroy` com `URL.revokeObjectURL`
 - Em modo edição: campo de arquivo é opcional — exibir imagem atual e só enviar `image` no FormData se novo arquivo selecionado
 - Validação manual: se modo criação e nenhum arquivo selecionado, bloquear submit e exibir erro via signal (`imageRequired = signal(false)`)
 - A área de upload deve ser um `<label>` estilizado com `border-dashed` do Tailwind, exibindo nome do arquivo quando selecionado
+- **Drag-and-drop obrigatório:** o `<label>` deve responder a `(dragover)`, `(dragleave)` e `(drop)`. Ao arrastar sobre a área, mudar o estilo visualmente (ex: borda e fundo em `primary`). O arquivo arrastado deve ser processado exatamente como o selecionado via clique. Extrair um método privado `processFile(file, inputRef?)` para evitar duplicação entre `onFileChange` e `onDrop`.
 
 ```typescript
 // Exemplo no component
 readonly selectedFile = signal<File | null>(null);
 readonly previewUrl = signal<string | null>(null);
+readonly isDragOver = signal(false);
 private objectUrl: string | null = null;
 
 onFileChange(event: Event): void {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0] ?? null;
+  this.processFile(file, input);
+}
+
+onDragOver(event: DragEvent): void {
+  event.preventDefault();
+  event.stopPropagation();
+  this.isDragOver.set(true);
+}
+
+onDragLeave(event: DragEvent): void {
+  event.preventDefault();
+  event.stopPropagation();
+  this.isDragOver.set(false);
+}
+
+onDrop(event: DragEvent): void {
+  event.preventDefault();
+  event.stopPropagation();
+  this.isDragOver.set(false);
+  const file = event.dataTransfer?.files?.[0] ?? null;
+  this.processFile(file);
+}
+
+private processFile(file: File | null, inputRef?: HTMLInputElement): void {
+  this.imageRequired.set(false);
+  this.imageSizeError.set(false);
+  if (this.objectUrl) { URL.revokeObjectURL(this.objectUrl); this.objectUrl = null; }
+  if (file && !isFileSizeValid(file)) {
+    this.imageSizeError.set(true);
+    this.selectedFile.set(null);
+    this.previewUrl.set(null);
+    if (inputRef) inputRef.value = '';
+    return;
+  }
   this.selectedFile.set(file);
-  if (this.objectUrl) URL.revokeObjectURL(this.objectUrl);
   this.objectUrl = file ? URL.createObjectURL(file) : null;
   this.previewUrl.set(this.objectUrl);
 }
@@ -77,6 +113,27 @@ ngOnDestroy(): void {
 const fd = new FormData();
 fd.append('slug', this.form.controls.slug.value);
 if (this.selectedFile()) fd.append('image', this.selectedFile()!);
+```
+
+```html
+<!-- Template: área de upload com drag-and-drop -->
+<label
+  class="flex flex-col items-center justify-center w-full rounded-lg border-2 border-dashed cursor-pointer transition-colors"
+  [class]="imageRequired() ? 'border-red-400 bg-red-50 dark:bg-red-900/10' : isDragOver() ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/10' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700'"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <!-- conteúdo: ícone, nome do arquivo, texto de instrução -->
+  @if (isDragOver()) {
+    <p>{{ 'form.imageDrop' | transloco }}</p>
+  } @else if (selectedFile()) {
+    <p>{{ selectedFile()!.name }}</p>
+  } @else {
+    <p>{{ 'form.imageSelect' | transloco }}</p>
+  }
+  <input type="file" accept="image/*" class="hidden" (change)="onFileChange($event)" />
+</label>
 ```
 
 ---

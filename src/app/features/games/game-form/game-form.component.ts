@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { GamesService } from '../services/games.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { isFileSizeValid, isFileTypeValid } from '../../../shared/utils/file-validation.utils';
 
 @Component({
   selector: 'app-game-form',
@@ -29,8 +30,11 @@ export class GameFormComponent implements OnInit, OnDestroy {
   readonly previewUrl = signal<string | null>(null);
   readonly existingImageUrl = signal<string | null>(null);
   readonly imageRequired = signal(false);
+  readonly imageSizeError = signal(false);
+  readonly imageTypeError = signal(false);
   readonly imageLoadError = signal(false);
   readonly previewLoadError = signal(false);
+  readonly isDragOver = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     slug: ['', [Validators.required, Validators.minLength(2)]],
@@ -69,13 +73,53 @@ export class GameFormComponent implements OnInit, OnDestroy {
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
-    this.selectedFile.set(file);
+    this.processFile(file, input);
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(true);
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+    const file = event.dataTransfer?.files?.[0] ?? null;
+    this.processFile(file);
+  }
+
+  private processFile(file: File | null, inputRef?: HTMLInputElement): void {
     this.imageRequired.set(false);
+    this.imageSizeError.set(false);
+    this.imageTypeError.set(false);
     this.previewLoadError.set(false);
     if (this.objectUrl) {
       URL.revokeObjectURL(this.objectUrl);
       this.objectUrl = null;
     }
+    if (file && !isFileTypeValid(file)) {
+      this.imageTypeError.set(true);
+      this.selectedFile.set(null);
+      this.previewUrl.set(null);
+      if (inputRef) inputRef.value = '';
+      return;
+    }
+    if (file && !isFileSizeValid(file)) {
+      this.imageSizeError.set(true);
+      this.selectedFile.set(null);
+      this.previewUrl.set(null);
+      if (inputRef) inputRef.value = '';
+      return;
+    }
+    this.selectedFile.set(file);
     if (file) {
       this.objectUrl = URL.createObjectURL(file);
       this.previewUrl.set(this.objectUrl);
@@ -90,11 +134,20 @@ export class GameFormComponent implements OnInit, OnDestroy {
       this.imageRequired.set(true);
       return;
     }
+    const file = this.selectedFile();
+    let _isValidSizeFile = true;
+    if (file) {
+      _isValidSizeFile = isFileSizeValid(file);
+    }
+    if (file && !_isValidSizeFile) {
+      this.imageSizeError.set(true);
+      return;
+    }
     this.saving.set(true);
     const fd = new FormData();
     fd.append('slug', this.form.controls.slug.value);
-    if (this.selectedFile()) {
-      fd.append('image', this.selectedFile()!);
+    if (file) {
+      fd.append('image', file);
     }
     const obs$ = this.isEdit()
       ? this.gamesService.update(this.itemId()!, fd)
