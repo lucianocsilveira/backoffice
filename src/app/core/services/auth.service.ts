@@ -60,7 +60,20 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  isTokenExpired(token?: string | null): boolean {
+    const t = token ?? this.getToken();
+    if (!t) return true;
+    try {
+      const payload = JSON.parse(atob(t.split('.')[1]));
+      if (typeof payload['exp'] !== 'number') return false;
+      return Date.now() >= payload['exp'] * 1000;
+    } catch {
+      return true;
+    }
   }
 
   private storeTokens(accessToken: string, refreshToken: string): void {

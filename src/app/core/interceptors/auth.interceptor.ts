@@ -5,8 +5,10 @@ import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+const AUTH_BYPASS_URLS = ['/api/auth/login', '/api/auth/refresh'];
+
 let isRefreshing = false;
-const refreshDone$ = new BehaviorSubject<string | null>(null);
+const refreshDone$ = new BehaviorSubject<string | null | false>(null);
 
 function addToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
   return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
@@ -26,9 +28,12 @@ function handle401(
 
   if (isRefreshing) {
     return refreshDone$.pipe(
-      filter((token): token is string => token !== null),
+      filter((token): token is string | false => token !== null),
       take(1),
-      switchMap((token) => next(addToken(req, token)))
+      switchMap((token) => {
+        if (token === false) return throwError(() => new Error('Token refresh failed.'));
+        return next(addToken(req, token));
+      })
     );
   }
 
@@ -43,6 +48,7 @@ function handle401(
     }),
     catchError((err) => {
       isRefreshing = false;
+      refreshDone$.next(false);
       authService.logout();
       router.navigate(['/login']);
       return throwError(() => err);
@@ -59,7 +65,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(clonedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      const isAuthUrl = AUTH_BYPASS_URLS.some((url) => req.url.includes(url));
+      if (error.status === 401 && !isAuthUrl) {
         return handle401(req, next, authService, router);
       }
       return throwError(() => error);

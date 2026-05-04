@@ -65,14 +65,11 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'gameForm.imageSelect' | transloco }}</p>
               }
             </div>
-            <input type="file" accept="image/jpeg,image/png" class="hidden" (change)="onFileChange($event)" />
+            <input type="file" accept="image/*" class="hidden" (change)="onFileChange($event)" />
           </label>
 
           @if (imageRequired()) {
             <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageRequired' | transloco }}</p>
-          }
-          @if (imageTypeError()) {
-            <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageTypeError' | transloco }}</p>
           }
           @if (imageSizeError()) {
             <p class="mt-1 text-xs text-red-600">{{ 'gameForm.imageSizeError' | transloco }}</p>
@@ -85,11 +82,11 @@
                 <img
                   [src]="previewUrl()!"
                   alt="Preview"
-                  class="h-20 w-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                  class="w-20 rounded-lg border border-gray-200 dark:border-gray-600"
                   (error)="previewLoadError.set(true)"
                 />
               } @else {
-                <div class="h-20 w-20 flex items-center justify-center rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20">
+                <div class="w-20 flex items-center justify-center rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20">
                   <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                   </svg>
