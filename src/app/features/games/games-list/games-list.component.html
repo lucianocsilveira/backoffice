@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between mb-6">
     <div>
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ 'games.title' | transloco }}</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ 'games.records' | transloco: { count: filtered().length } }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ 'games.records' | transloco: { count: total() } }}</p>
     </div>
     <a
       routerLink="/games/new"
@@ -56,14 +56,14 @@
                 }
               </tr>
             }
-          } @else if (filtered().length === 0) {
+          } @else if (items().length === 0) {
             <tr>
               <td colspan="4" class="px-4 py-12 text-center text-gray-400 dark:text-gray-500 text-sm">
                 {{ 'games.empty' | transloco }}
               </td>
             </tr>
           } @else {
-            @for (item of filtered(); track item.id) {
+            @for (item of items(); track item.id) {
               <tr class="border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                 <!-- Thumbnail -->
                 <td class="px-4 py-3">
@@ -122,5 +122,44 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination -->
+    @if (lastPage() > 1 || total() > 0) {
+      <div class="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-700">
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          {{ 'games.paginationInfo' | transloco: { page: page(), lastPage: lastPage() } }}
+        </span>
+        <div class="flex items-center gap-1">
+          <button
+            (click)="goToPage(page() - 1)"
+            [disabled]="page() === 1 || loading()"
+            class="px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {{ 'games.paginationPrev' | transloco }}
+          </button>
+
+          @for (p of pageNumbers(); track p) {
+            <button
+              (click)="goToPage(p)"
+              [disabled]="loading()"
+              class="w-9 py-1.5 text-sm rounded-lg border transition-colors disabled:cursor-not-allowed"
+              [class]="p === page()
+                ? 'bg-primary-600 border-primary-600 text-white font-semibold'
+                : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+            >
+              {{ p }}
+            </button>
+          }
+
+          <button
+            (click)="goToPage(page() + 1)"
+            [disabled]="page() >= lastPage() || loading()"
+            class="px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {{ 'games.paginationNext' | transloco }}
+          </button>
+        </div>
+      </div>
+    }
   </div>
 </div>
