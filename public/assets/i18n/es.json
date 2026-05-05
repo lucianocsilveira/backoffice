@@ -188,7 +188,7 @@
     "nicknamePlaceholder": "jugador123",
     "nicknameError": "Nickname obligatorio (mín. 2 caracteres).",
     "nicknameSlugError": "Usa solo letras minúsculas, números y guiones.",
-    "nicknameHint": "Usado como URL. Solo letras minúsculas, números y guiones. Los acentos y espacios se convierten automáticamente.",,
+    "nicknameHint": "Usado como URL. Solo letras minúsculas, números y guiones. Los acentos y espacios se convierten automáticamente.",
     "displayName": "Nombre de visualización",
     "displayNamePlaceholder": "Juan García",
     "displayNameError": "Nombre de visualización obligatorio (mín. 2 caracteres).",
