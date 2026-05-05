@@ -93,7 +93,7 @@ export class SectionFormComponent implements OnInit {
     this.loading.set(true);
     forkJoin({
       section: this.sectionsService.getById(id),
-      games: this.gamesService.getAll({ perPage: 9999 }),
+      games: this.gamesService.getAll({ perPage: 10 }),
     }).subscribe({
       next: ({ section, games }) => {
         this.form.patchValue({ icon: section.icon, title: section.title, message: section.message });
@@ -125,7 +125,7 @@ export class SectionFormComponent implements OnInit {
 
   private loadAllGames(): void {
     this.gamesLoading.set(true);
-    this.gamesService.getAll({ perPage: 9999 }).subscribe({
+    this.gamesService.getAll({ perPage: 10 }).subscribe({
       next: (res) => {
         this.allGames.set(res.items);
         this.gamesLoading.set(false);

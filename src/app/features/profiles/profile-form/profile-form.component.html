@@ -1,0 +1,613 @@
+<div class="max-w-5xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-6">
+    <a
+      routerLink="/profiles"
+      class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        {{ (isEdit() ? 'profileForm.titleEdit' : 'profileForm.titleNew') | transloco }}
+      </h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        {{ (isEdit() ? 'profileForm.subtitleEdit' : 'profileForm.subtitleNew') | transloco }}
+      </p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="space-y-4">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="h-12 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+      }
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6" novalidate>
+
+      <!-- Basic info card -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-4">
+          {{ 'profileForm.basicInfo' | transloco }}
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <!-- Nickname -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.nickname' | transloco }}
+            </label>
+            <input
+              type="text"
+              formControlName="nickname"
+              [placeholder]="'profileForm.nicknamePlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+              [class.border-red-400]="form.controls.nickname.invalid && form.controls.nickname.touched"
+              [class.border-gray-300]="!(form.controls.nickname.invalid && form.controls.nickname.touched)"
+              [class.dark:border-gray-600]="!(form.controls.nickname.invalid && form.controls.nickname.touched)"
+            />
+            @if (form.controls.nickname.invalid && form.controls.nickname.touched) {
+              <p class="mt-1 text-xs text-red-500">
+                @if (form.controls.nickname.hasError('urlSlug')) {
+                  {{ 'profileForm.nicknameSlugError' | transloco }}
+                } @else {
+                  {{ 'profileForm.nicknameError' | transloco }}
+                }
+              </p>
+            }
+            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">{{ 'profileForm.nicknameHint' | transloco }}</p>
+          </div>
+
+          <!-- Display Name -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.displayName' | transloco }}
+            </label>
+            <input
+              type="text"
+              formControlName="displayName"
+              [placeholder]="'profileForm.displayNamePlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+              [class.border-red-400]="form.controls.displayName.invalid && form.controls.displayName.touched"
+              [class.border-gray-300]="!(form.controls.displayName.invalid && form.controls.displayName.touched)"
+              [class.dark:border-gray-600]="!(form.controls.displayName.invalid && form.controls.displayName.touched)"
+            />
+            @if (form.controls.displayName.invalid && form.controls.displayName.touched) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.displayNameError' | transloco }}</p>
+            }
+          </div>
+
+          <!-- Bio (full width) -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.bio' | transloco }}
+            </label>
+            <textarea
+              formControlName="bio"
+              rows="3"
+              [placeholder]="'profileForm.bioPlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-none"
+            ></textarea>
+          </div>
+
+          <!-- City -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.city' | transloco }}
+            </label>
+            <input
+              type="text"
+              formControlName="city"
+              [placeholder]="'profileForm.cityPlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+            />
+          </div>
+
+          <!-- State -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.state' | transloco }}
+            </label>
+            <input
+              type="text"
+              formControlName="state"
+              [placeholder]="'profileForm.statePlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+            />
+          </div>
+
+          <!-- Country -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.country' | transloco }}
+            </label>
+            <input
+              type="text"
+              formControlName="country"
+              [placeholder]="'profileForm.countryPlaceholder' | transloco"
+              class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+            />
+          </div>
+
+          <!-- Theme Color -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.themeColor' | transloco }}
+            </label>
+            <div class="flex items-center gap-2">
+              <input
+                type="color"
+                formControlName="themeColor"
+                class="w-10 h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 cursor-pointer p-0.5"
+              />
+              <input
+                type="text"
+                formControlName="themeColor"
+                [placeholder]="'profileForm.themeColorPlaceholder' | transloco"
+                class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Priority -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'profileForm.priority' | transloco }}
+            </label>
+            <input
+              type="number"
+              formControlName="priority"
+              min="0"
+              class="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+              [class.border-red-400]="form.controls.priority.invalid && form.controls.priority.touched"
+              [class.border-gray-300]="!(form.controls.priority.invalid && form.controls.priority.touched)"
+              [class.dark:border-gray-600]="!(form.controls.priority.invalid && form.controls.priority.touched)"
+            />
+            @if (form.controls.priority.invalid && form.controls.priority.touched) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.priorityError' | transloco }}</p>
+            }
+          </div>
+
+          <!-- Is Enabled -->
+          <div class="sm:col-span-2 flex items-center gap-3">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="isEnabled" class="sr-only peer" />
+              <div
+                class="w-10 h-6 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-700 peer-checked:bg-primary-600 peer-checked:border-primary-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4"
+              ></div>
+            </label>
+            <span class="text-sm text-gray-700 dark:text-gray-300">{{ 'profileForm.isEnabled' | transloco }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Images card -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-4">
+          {{ 'profileForm.imagesInfo' | transloco }}
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+          <!-- Avatar Image -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ 'profileForm.avatarImage' | transloco }}
+            </label>
+            @if (isEdit() && currentAvatarUrl() && !previewAvatar()) {
+              <div class="mb-2 flex justify-center">
+                <img
+                  [src]="currentAvatarUrl()!"
+                  alt="avatar"
+                  class="w-20 h-20 rounded-full object-cover border border-gray-200 dark:border-gray-600"
+                />
+              </div>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-2 text-center">{{ 'profileForm.imageCurrentKeep' | transloco }}</p>
+            }
+            @if (previewAvatar()) {
+              <div class="mb-2 flex justify-center">
+                <img
+                  [src]="previewAvatar()!"
+                  alt="avatar preview"
+                  class="w-20 h-20 rounded-full object-cover border border-primary-400"
+                />
+              </div>
+            }
+            <label
+              class="flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 border-dashed cursor-pointer transition-colors"
+              [class]="isDragOverAvatar()
+                ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/10'
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700'"
+              (dragover)="onDragOverAvatar($event)"
+              (dragleave)="onDragLeaveAvatar($event)"
+              (drop)="onDropAvatar($event)"
+            >
+              @if (isDragOverAvatar()) {
+                <p class="text-xs text-primary-600 dark:text-primary-400">{{ 'profileForm.imageDrop' | transloco }}</p>
+              } @else if (selectedAvatar()) {
+                <svg class="w-5 h-5 mb-1 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="text-xs text-gray-600 dark:text-gray-300 px-2 truncate max-w-full">{{ selectedAvatar()!.name }}</p>
+              } @else {
+                <svg class="w-5 h-5 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <p class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ (isEdit() && currentAvatarUrl() ? 'profileForm.imageChange' : 'profileForm.imageSelect') | transloco }}
+                </p>
+              }
+              <input type="file" accept="image/jpeg,image/png" class="hidden" (change)="onAvatarChange($event)" />
+            </label>
+            @if (avatarTypeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageTypeError' | transloco }}</p>
+            }
+            @if (avatarSizeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageSizeError' | transloco }}</p>
+            }
+          </div>
+
+          <!-- Card Image -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ 'profileForm.cardImage' | transloco }}
+            </label>
+            @if (isEdit() && currentCardUrl() && !previewCard()) {
+              <div class="mb-2 flex justify-center">
+                <img
+                  [src]="currentCardUrl()!"
+                  alt="card"
+                  class="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                />
+              </div>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-2 text-center">{{ 'profileForm.imageCurrentKeep' | transloco }}</p>
+            }
+            @if (previewCard()) {
+              <div class="mb-2 flex justify-center">
+                <img
+                  [src]="previewCard()!"
+                  alt="card preview"
+                  class="w-full h-20 object-cover rounded-lg border border-primary-400"
+                />
+              </div>
+            }
+            <label
+              class="flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 border-dashed cursor-pointer transition-colors"
+              [class]="isDragOverCard()
+                ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/10'
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700'"
+              (dragover)="onDragOverCard($event)"
+              (dragleave)="onDragLeaveCard($event)"
+              (drop)="onDropCard($event)"
+            >
+              @if (isDragOverCard()) {
+                <p class="text-xs text-primary-600 dark:text-primary-400">{{ 'profileForm.imageDrop' | transloco }}</p>
+              } @else if (selectedCard()) {
+                <svg class="w-5 h-5 mb-1 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="text-xs text-gray-600 dark:text-gray-300 px-2 truncate max-w-full">{{ selectedCard()!.name }}</p>
+              } @else {
+                <svg class="w-5 h-5 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <p class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ (isEdit() && currentCardUrl() ? 'profileForm.imageChange' : 'profileForm.imageSelect') | transloco }}
+                </p>
+              }
+              <input type="file" accept="image/jpeg,image/png" class="hidden" (change)="onCardChange($event)" />
+            </label>
+            @if (cardTypeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageTypeError' | transloco }}</p>
+            }
+            @if (cardSizeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageSizeError' | transloco }}</p>
+            }
+          </div>
+
+          <!-- Banner Image -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ 'profileForm.bannerImage' | transloco }}
+            </label>
+            @if (isEdit() && currentBannerUrl() && !previewBanner()) {
+              <div class="mb-2">
+                <img
+                  [src]="currentBannerUrl()!"
+                  alt="banner"
+                  class="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                />
+              </div>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-2 text-center">{{ 'profileForm.imageCurrentKeep' | transloco }}</p>
+            }
+            @if (previewBanner()) {
+              <div class="mb-2">
+                <img
+                  [src]="previewBanner()!"
+                  alt="banner preview"
+                  class="w-full h-20 object-cover rounded-lg border border-primary-400"
+                />
+              </div>
+            }
+            <label
+              class="flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 border-dashed cursor-pointer transition-colors"
+              [class]="isDragOverBanner()
+                ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/10'
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700'"
+              (dragover)="onDragOverBanner($event)"
+              (dragleave)="onDragLeaveBanner($event)"
+              (drop)="onDropBanner($event)"
+            >
+              @if (isDragOverBanner()) {
+                <p class="text-xs text-primary-600 dark:text-primary-400">{{ 'profileForm.imageDrop' | transloco }}</p>
+              } @else if (selectedBanner()) {
+                <svg class="w-5 h-5 mb-1 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="text-xs text-gray-600 dark:text-gray-300 px-2 truncate max-w-full">{{ selectedBanner()!.name }}</p>
+              } @else {
+                <svg class="w-5 h-5 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <p class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ (isEdit() && currentBannerUrl() ? 'profileForm.imageChange' : 'profileForm.imageSelect') | transloco }}
+                </p>
+              }
+              <input type="file" accept="image/jpeg,image/png" class="hidden" (change)="onBannerChange($event)" />
+            </label>
+            @if (bannerTypeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageTypeError' | transloco }}</p>
+            }
+            @if (bannerSizeError()) {
+              <p class="mt-1 text-xs text-red-500">{{ 'profileForm.imageSizeError' | transloco }}</p>
+            }
+          </div>
+
+        </div>
+      </div>
+
+      <!-- All sections table -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ 'profileForm.allSectionsTitle' | transloco }}
+            </h2>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              {{ 'profileForm.allSectionsHint' | transloco }}
+            </p>
+          </div>
+          <div class="relative w-full sm:w-56">
+            <svg
+              class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              [placeholder]="'profileForm.sectionsSearchPlaceholder' | transloco"
+              [ngModel]="sectionsSearch()"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onSectionsSearchChange($event)"
+              class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-100 dark:border-gray-700">
+                <th class="px-4 py-3 w-10"></th>
+                <th class="px-4 py-3 w-12">{{ 'profileForm.colSectionIcon' | transloco }}</th>
+                <th class="px-4 py-3">{{ 'profileForm.colSectionTitle' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (sectionsLoading()) {
+                @for (i of [1, 2, 3, 4, 5]; track i) {
+                  <tr class="border-b border-gray-50 dark:border-gray-700">
+                    @for (j of [1, 2, 3]; track j) {
+                      <td class="px-4 py-3">
+                        <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"></div>
+                      </td>
+                    }
+                  </tr>
+                }
+              } @else if (pagedSections().length === 0) {
+                <tr>
+                  <td colspan="3" class="px-4 py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
+                    {{ 'profileForm.sectionsEmpty' | transloco }}
+                  </td>
+                </tr>
+              } @else {
+                @for (section of pagedSections(); track section.id) {
+                  <tr
+                    class="border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer"
+                    (click)="toggleSection(section)"
+                  >
+                    <td class="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        [checked]="selectedSectionIds().has(section.id)"
+                        (click)="$event.stopPropagation()"
+                        (change)="toggleSection(section)"
+                        class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer"
+                      />
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="text-lg">{{ section.icon }}</span>
+                    </td>
+                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      {{ section.title }}
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Sections pagination -->
+        @if (sectionsLastPage() > 1) {
+          <div class="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-700">
+            <span class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'profileForm.sectionsPaginationInfo' | transloco: { page: sectionsPage(), lastPage: sectionsLastPage(), total: sectionsTotal() } }}
+            </span>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                (click)="goToSectionsPage(sectionsPage() - 1)"
+                [disabled]="sectionsPage() === 1"
+                class="px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                ‹
+              </button>
+              @for (p of sectionsPageNumbers(); track p) {
+                <button
+                  type="button"
+                  (click)="goToSectionsPage(p)"
+                  class="w-8 py-1 text-xs rounded-lg border transition-colors"
+                  [class]="p === sectionsPage()
+                    ? 'bg-primary-600 border-primary-600 text-white font-semibold'
+                    : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                >
+                  {{ p }}
+                </button>
+              }
+              <button
+                type="button"
+                (click)="goToSectionsPage(sectionsPage() + 1)"
+                [disabled]="sectionsPage() >= sectionsLastPage()"
+                class="px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Selected sections table (drag-and-drop) -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+          <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'profileForm.selectedTitle' | transloco }}
+            <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+              {{ selectedSections().length }}
+            </span>
+          </h2>
+          <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+            {{ 'profileForm.selectedHint' | transloco }}
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-100 dark:border-gray-700">
+                <th class="px-4 py-3 w-8"></th>
+                <th class="px-4 py-3 w-10">{{ 'profileForm.colPriority' | transloco }}</th>
+                <th class="px-4 py-3 w-12">{{ 'profileForm.colSectionIcon' | transloco }}</th>
+                <th class="px-4 py-3">{{ 'profileForm.colSectionTitle' | transloco }}</th>
+                <th class="px-4 py-3 w-10"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (selectedSections().length === 0) {
+                <tr>
+                  <td colspan="5" class="px-4 py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
+                    {{ 'profileForm.selectedEmpty' | transloco }}
+                  </td>
+                </tr>
+              } @else {
+                @for (item of selectedSections(); track item.sectionId; let i = $index) {
+                  <tr
+                    draggable="true"
+                    (dragstart)="onDragStart(i)"
+                    (dragover)="onDragOver($event, i)"
+                    (dragleave)="onDragLeave()"
+                    (drop)="onDrop(i)"
+                    (dragend)="onDragEnd()"
+                    class="border-b border-gray-50 dark:border-gray-700 transition-colors"
+                    [class.bg-primary-50]="dragOverIndex() === i && dragFromIndex() !== i"
+                    [class.dark:bg-primary-900\/20]="dragOverIndex() === i && dragFromIndex() !== i"
+                    [class.opacity-40]="dragFromIndex() === i"
+                    [class.hover:bg-gray-50]="dragOverIndex() !== i"
+                    [class.dark:hover:bg-gray-700\/50]="dragOverIndex() !== i"
+                  >
+                    <!-- Drag handle -->
+                    <td class="px-3 py-3 cursor-grab active:cursor-grabbing text-gray-300 dark:text-gray-600">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                      </svg>
+                    </td>
+                    <!-- Priority badge -->
+                    <td class="px-4 py-3">
+                      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                        {{ item.priority }}
+                      </span>
+                    </td>
+                    <!-- Icon -->
+                    <td class="px-4 py-3">
+                      <span class="text-lg">{{ item.icon }}</span>
+                    </td>
+                    <!-- Title -->
+                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      {{ item.title }}
+                    </td>
+                    <!-- Remove -->
+                    <td class="px-4 py-3">
+                      <button
+                        type="button"
+                        (click)="removeSelectedSection(i)"
+                        class="cursor-pointer p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Form actions -->
+      <div class="flex items-center justify-end gap-3 pb-6">
+        <a
+          routerLink="/profiles"
+          class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          {{ 'profileForm.cancel' | transloco }}
+        </a>
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="px-4 py-2.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+        >
+          @if (saving()) {
+            <span class="inline-flex items-center gap-2">
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+              </svg>
+              {{ 'profileForm.saving' | transloco }}
+            </span>
+          } @else {
+            {{ 'profileForm.save' | transloco }}
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

@@ -32,6 +32,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/company/company.routes').then((m) => m.companyRoutes),
       },
+      {
+        path: 'profiles',
+        loadChildren: () =>
+          import('./features/profiles/profiles.routes').then((m) => m.profilesRoutes),
+      },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
     ],
   },

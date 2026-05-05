@@ -59,6 +59,11 @@ export class MainLayoutComponent implements OnInit {
       label: 'layout.sections',
       route: '/sections',
       iconPath: 'M4 6h16M4 10h16M4 14h16M4 18h16',
+    },
+    {
+      label: 'layout.profiles',
+      route: '/profiles',
+      iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     }
   ];
 
