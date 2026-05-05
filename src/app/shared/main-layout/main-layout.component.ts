@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../core/services/auth.service';
@@ -6,6 +6,7 @@ import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService } from '../../core/services/language.service';
 import { ToastComponent } from '../toast/toast.component';
 import { TitleCasePipe } from '@angular/common';
+import { CompanyService } from '../../features/company/services/company.service';
 
 interface NavItem {
   label: string;
@@ -19,11 +20,13 @@ interface NavItem {
   imports: [RouterOutlet, RouterLink, RouterLinkActive, ToastComponent, TranslocoPipe, TitleCasePipe],
   templateUrl: './main-layout.component.html',
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   readonly themeService = inject(ThemeService);
   readonly langService = inject(LanguageService);
+  readonly companyService = inject(CompanyService);
+  readonly logoError = signal(false);
 
   readonly currentUser = this.authService.currentUser;
   readonly sidebarOpen = signal(true);
@@ -32,7 +35,16 @@ export class MainLayoutComponent {
     this.langService.available.find((l) => l.code === this.langService.currentLang()) ?? this.langService.available[0]
   );
 
+  ngOnInit(): void {
+    this.companyService.loadCompany();
+  }
+
   readonly navItems: NavItem[] = [
+    {
+      label: 'layout.company',
+      route: '/company',
+      iconPath: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+    },
     {
       label: 'layout.users',
       route: '/users',
@@ -47,7 +59,7 @@ export class MainLayoutComponent {
       label: 'layout.sections',
       route: '/sections',
       iconPath: 'M4 6h16M4 10h16M4 14h16M4 18h16',
-    },
+    }
   ];
 
   toggleSidebar(): void {

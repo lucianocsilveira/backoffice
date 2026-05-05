@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { LanguageService } from '../../../core/services/language.service';
+import { CompanyService } from '../../company/services/company.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { LanguageService } from '../../../core/services/language.service';
   imports: [ReactiveFormsModule, TranslocoPipe],
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -21,9 +22,15 @@ export class LoginComponent {
   private readonly transloco = inject(TranslocoService);
   readonly themeService = inject(ThemeService);
   readonly langService = inject(LanguageService);
+  readonly companyService = inject(CompanyService);
 
   readonly loading = signal(false);
   readonly showPassword = signal(false);
+  readonly logoError = signal(false);
+
+  ngOnInit(): void {
+    this.companyService.loadCompany();
+  }
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

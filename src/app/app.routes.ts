@@ -27,6 +27,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/sections/sections.routes').then((m) => m.sectionsRoutes),
       },
+      {
+        path: 'company',
+        loadChildren: () =>
+          import('./features/company/company.routes').then((m) => m.companyRoutes),
+      },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
     ],
   },

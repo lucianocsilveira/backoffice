@@ -7,13 +7,24 @@
   >
     <!-- Logo -->
     <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-700">
-      <div class="shrink-0 w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
+      <div class="shrink-0 w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+        @if (companyService.company()?.logoUrl && !logoError()) {
+          <img
+            [src]="companyService.company()!.logoUrl"
+            alt="Logo"
+            class="w-8 h-8 object-contain"
+            (error)="logoError.set(true)"
+          />
+        } @else {
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        }
       </div>
-      <span [class]="sidebarOpen() ? 'hidden lg:block text-lg font-semibold tracking-tight' : 'hidden'">{{ 'layout.appName' | transloco }}</span>
+      <span [class]="sidebarOpen() ? 'hidden lg:block text-lg font-semibold tracking-tight truncate' : 'hidden'">
+        {{ companyService.company()?.name ?? ('layout.appName' | transloco) }}
+      </span>
     </div>
 
     <!-- Nav -->

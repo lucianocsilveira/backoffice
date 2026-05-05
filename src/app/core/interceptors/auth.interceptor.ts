@@ -5,7 +5,7 @@ import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-const AUTH_BYPASS_URLS = ['/api/auth/login', '/api/auth/refresh'];
+const AUTH_BYPASS_URLS = ['/api/auth/login', '/api/auth/refresh', '/company'];
 
 let isRefreshing = false;
 const refreshDone$ = new BehaviorSubject<string | null | false>(null);
