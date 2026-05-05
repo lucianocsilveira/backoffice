@@ -27,7 +27,19 @@
 
         <!-- Slug -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'gameForm.slug' | transloco }}</label>
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'gameForm.slug' | transloco }}</label>
+            <button
+              type="button"
+              [appTooltip]="'gameForm.slugHelp' | transloco"
+              tooltipPlacement="right"
+              class="flex items-center justify-center w-4 h-4 text-gray-400 hover:text-primary-500 transition-colors cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
           <input
             type="text"
             formControlName="slug"

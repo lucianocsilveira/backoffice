@@ -5,11 +5,12 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { GamesService } from '../services/games.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { isFileSizeValid, isFileTypeValid } from '../../../shared/utils/file-validation.utils';
+import { TooltipDirective } from '../../../shared/directives/tooltip.directive';
 
 @Component({
   selector: 'app-game-form',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe, TooltipDirective],
   templateUrl: './game-form.component.html',
 })
 export class GameFormComponent implements OnInit, OnDestroy {

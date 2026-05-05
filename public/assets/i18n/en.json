@@ -77,6 +77,7 @@
     "subtitleNew": "Fill in the details to create a new game",
     "subtitleEdit": "Update the game information",
     "slug": "Slug",
+    "slugHelp": "To get the slug:\n• Go to the store\n• Click on the desired game\n• Copy the value after 'games/' — that is the slug",
     "slugPlaceholder": "my-game",
     "slugError": "Slug required (min. 2 characters).",
     "image": "Image",
