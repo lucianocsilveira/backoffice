@@ -281,7 +281,7 @@
                     (drop)="onDrop(i)"
                     (dragend)="onDragEnd()"
                     class="border-b border-gray-50 dark:border-gray-700 transition-colors"
-                    [class.bg-primary-50]="dragOverIndex() === i && dragFromIndex() !== i"
+                    [class.bg-gray-700]="dragOverIndex() === i && dragFromIndex() !== i"
                     [class.dark:bg-primary-900\/20]="dragOverIndex() === i && dragFromIndex() !== i"
                     [class.opacity-40]="dragFromIndex() === i"
                     [class.hover:bg-gray-700]="dragOverIndex() !== i"
