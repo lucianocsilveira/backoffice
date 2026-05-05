@@ -441,7 +441,7 @@
                       />
                     </td>
                     <td class="px-4 py-3">
-                      <span class="text-lg">{{ section.icon }}</span>
+                      <img [src]="getIconUrl(section.icon)" [alt]="section.icon" class="w-6 h-6" />
                     </td>
                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
                       {{ section.title }}
@@ -555,7 +555,7 @@
                     </td>
                     <!-- Icon -->
                     <td class="px-4 py-3">
-                      <span class="text-lg">{{ item.icon }}</span>
+                      <img [src]="getIconUrl(item.icon)" [alt]="item.icon" class="w-6 h-6" />
                     </td>
                     <!-- Title -->
                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">

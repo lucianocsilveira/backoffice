@@ -11,6 +11,7 @@ import { Section } from '../../sections/models/section.model';
 import { ProfileSelectedSection } from '../models/profile.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { isFileSizeValid, isFileTypeValid } from '../../../shared/utils/file-validation.utils';
+import { getIconUrl } from '../../../shared/icons/icon-names';
 
 @Component({
   selector: 'app-profile-form',
@@ -105,6 +106,8 @@ export class ProfileFormComponent implements OnInit, OnDestroy {
   // ── Drag & drop state ─────────────────────────────────────────────────────
   readonly dragFromIndex = signal<number | null>(null);
   readonly dragOverIndex = signal<number | null>(null);
+
+  readonly getIconUrl = getIconUrl;
 
   // ── Form ──────────────────────────────────────────────────────────────────
   readonly form = this.fb.nonNullable.group({
