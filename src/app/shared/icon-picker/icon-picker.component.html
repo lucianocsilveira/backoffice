@@ -1,0 +1,99 @@
+<div class="relative">
+  <!-- Trigger button -->
+  <button
+    type="button"
+    (click)="toggleOpen()"
+    [disabled]="disabled"
+    class="w-full flex items-center gap-2 px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    [class]="isOpen() ? 'border-primary-500 ring-2 ring-primary-500' : 'border-gray-300 dark:border-gray-600'"
+  >
+    @if (selected()) {
+      <img
+        [src]="getIconUrl(selected()!)"
+        [alt]="selected()!"
+        class="w-6 h-6 shrink-0 object-contain"
+      />
+      <span class="flex-1 text-left truncate">{{ selected() }}</span>
+    } @else {
+      <span class="flex-1 text-left text-gray-400 dark:text-gray-500">
+        {{ 'sectionForm.iconSelectPlaceholder' | transloco }}
+      </span>
+    }
+    <svg
+      class="w-4 h-4 shrink-0 text-gray-400 transition-transform"
+      [class.rotate-180]="isOpen()"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div
+      class="absolute z-50 mt-1 w-full min-w-[320px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden"
+    >
+      <!-- Search -->
+      <div class="p-2 border-b border-gray-100 dark:border-gray-700">
+        <div class="relative">
+          <svg
+            class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            [placeholder]="'sectionForm.iconSearchPlaceholder' | transloco"
+            class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Icons grid -->
+      <div class="p-2 max-h-64 overflow-y-auto">
+        @if (filteredIcons().length === 0) {
+          <p class="text-center text-sm text-gray-400 dark:text-gray-500 py-4">
+            {{ 'sectionForm.iconSearchEmpty' | transloco }}
+          </p>
+        } @else {
+          <div class="grid grid-cols-5 gap-1">
+            @for (icon of filteredIcons(); track icon) {
+              <button
+                type="button"
+                (click)="selectIcon(icon)"
+                [title]="icon"
+                class="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors cursor-pointer"
+                [class]="
+                  selected() === icon
+                    ? 'bg-primary-100 dark:bg-primary-900/40 ring-2 ring-primary-500'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                "
+              >
+                <img
+                  [src]="getIconUrl(icon)"
+                  [alt]="icon"
+                  class="w-8 h-8 object-contain"
+                />
+                <span class="text-[10px] text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full">
+                  {{ icon }}
+                </span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

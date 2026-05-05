@@ -9,11 +9,12 @@ import { GamesService } from '../../games/services/games.service';
 import { GameItem } from '../../games/models/game-item.model';
 import { SectionSelectedItem } from '../models/section.model';
 import { ToastService } from '../../../core/services/toast.service';
+import { IconPickerComponent } from '../../../shared/icon-picker/icon-picker.component';
 
 @Component({
   selector: 'app-section-form',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, TranslocoPipe],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, TranslocoPipe, IconPickerComponent],
   templateUrl: './section-form.component.html',
 })
 export class SectionFormComponent implements OnInit {
@@ -75,7 +76,7 @@ export class SectionFormComponent implements OnInit {
   readonly form = this.fb.nonNullable.group({
     icon: ['', [Validators.required]],
     title: ['', [Validators.required, Validators.minLength(2)]],
-    message: ['', [Validators.required]],
+    message: [''],
   });
 
   ngOnInit(): void {

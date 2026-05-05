@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged, skip } from 'rxjs';
 import { SectionsService } from '../services/sections.service';
 import { Section } from '../models/section.model';
 import { ToastService } from '../../../core/services/toast.service';
+import { getIconUrl } from '../../../shared/icons/icon-names';
 
 @Component({
   selector: 'app-sections-list',
@@ -88,5 +89,9 @@ export class SectionsListComponent implements OnInit {
       },
       error: () => this.toastService.error(this.t.translate('sections.deleteError')),
     });
+  }
+
+  getIconUrl(name: string): string {
+    return getIconUrl(name);
   }
 }

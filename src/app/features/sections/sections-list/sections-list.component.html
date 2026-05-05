@@ -85,7 +85,15 @@
               >
                 <!-- Icon -->
                 <td class="px-4 py-3">
-                  <span class="text-lg">{{ item.icon }}</span>
+                  @if (item.icon) {
+                    <img
+                      [src]="getIconUrl(item.icon)"
+                      [alt]="item.icon"
+                      class="w-8 h-8 object-contain"
+                    />
+                  } @else {
+                    <span class="text-gray-300 dark:text-gray-600">—</span>
+                  }
                 </td>
                 <!-- Title -->
                 <td class="px-4 py-3">
